@@ -1,22 +1,62 @@
 import React, { useState } from "react";
+import { useForm } from "react-hook-form";
+import axios from "axios";
 
 function App() {
-  const [HeadingText, setHeadingText] = useState("Student Information");
   const [isMousedOver, setMouseOver] = useState(false);
+  const { register, handleSubmit, errors } = useForm();
+  const [issubmitted, setname] = useState("Student Information");
 
-  function handleclick() {
-    setHeadingText("Submitted");
+  const onSubmit = data => {
+    console.log(data);
+    changename();
+    axios
+    .post('https://jsonplaceholder.typicode.com/posts',data)
+    .then(response => {console.log(response)})
+    .catch(error => console.log(error))
+
+  };
+
+  function changename() {
+    setname("Submitted");
   }
   function handleMouseOver() {
     setMouseOver(true);
   }
+  function handleMouseOut() {
+    setMouseOver(false);
+  }
 
   return (
-    <div className="container">
-      <h1>{HeadingText}</h1>
-      <input className="box" type="text" placeholder="What's your name?" />
-      <input className="box" type="text" placeholder="Date of Birth" />
-      <select id="dropdown" required>
+    <form className="container" onSubmit={handleSubmit(onSubmit)}>
+      <h1>{issubmitted}</h1>
+      <label className="radio" htmlFor="Name">
+        Name{" "}
+      </label>
+      <input
+        className="box"
+        type="text"
+        placeholder="What's your name?"
+        name="Name"
+        ref={register({ required:true  })}
+        pattern="[A-Za-z]{3,50}"
+      />
+      {errors.Name && <p>Your response is required</p>}
+      <label className="radio" htmlFor="Date of Birth">
+        Date of Birth{" "}
+      </label>
+      <input
+        className="box"
+        type="date"
+        placeholder="Date of Birth"
+        name="DateofBirth"
+        ref={register({ required: true })}
+      />
+      {errors.DateofBirth && <p>Your response is required</p>}
+      <label className="radio" htmlFor="Class">
+        Class{" "}
+      </label>
+      <select id="dropdown" ref={register} name="Class" required>
         <option value="" disabled selected hidden>
           Class
         </option>
@@ -33,7 +73,10 @@ function App() {
         <option value="XI">XI</option>
         <option value="XII">XII</option>
       </select>
-      <select id="dropdown" required>
+      <label className="radio" htmlFor="Division">
+        Division{" "}
+      </label>
+      <select id="dropdown" ref={register} name="Division" required>
         <option value="" disabled selected hidden>
           Division
         </option>
@@ -45,11 +88,24 @@ function App() {
         <label className="radio" htmlFor="Gender">
           Gender{" "}
         </label>
-        <input type="radio" value="MALE" name="gender" />
+        <input
+          type="radio"
+          value="MALE"
+          ref={register({ required: true })}
+          name="gender"
+        />
+
         <label className="radio" htmlFor="Male">
           Male{" "}
         </label>
-        <input type="radio" value="FEMALE" name="gender" />
+        <input
+          type="radio"
+          value="FEMALE"
+          ref={register({ required: true })}
+          name="gender"
+        />
+        {errors.gender && <p>Your response is required</p>}
+
         <label className="radio" htmlFor="Female">
           Female{" "}
         </label>
@@ -57,12 +113,13 @@ function App() {
 
       <button
         style={{ backgroundColor: isMousedOver ? "black" : "white" }}
-        onClick={handleclick}
         onMouseOver={handleMouseOver}
+        onMouseOut={handleMouseOut}
+        type="submit"
       >
         Submit
       </button>
-    </div>
+    </form>
   );
 }
 
