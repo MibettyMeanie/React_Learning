@@ -75,7 +75,7 @@ function Forms() {
                     placeholder="What is your name?"
                     ref={register({ required: true })}
                     required
-                    pattern="[A-Za-z]{3,50}"
+                    pattern="[A-Za-z\s]{3,50}"
                   />
                 </Col>
               </Form.Group>
